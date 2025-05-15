@@ -22,14 +22,7 @@ class Dashboard extends StatelessWidget {
         // the App.build method, and use it to set our appbar title.
         title: Text("Helm"),
       ),
-      body: Container(
-        child: Column(
-          children: <Widget> [
-            TextCard(cardTitle: 'My Card')
-          ]
-        )
-      )
+      body: Column(children: <Widget>[TextCard(cardTitle: 'My Card')]),
     );
   }
 }
-
