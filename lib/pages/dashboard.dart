@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:helm/widgets/base_card.dart';
 import '../widgets/text_card.dart';
 
 class Dashboard extends StatelessWidget {
@@ -22,7 +23,24 @@ class Dashboard extends StatelessWidget {
         // the App.build method, and use it to set our appbar title.
         title: Text("Helm"),
       ),
-      body: Column(children: <Widget>[TextCard(cardTitle: 'My Card')]),
+      body: Column(
+        children: <Widget>[
+          Row(
+            children: [
+              BaseCard(cardTitle: "Reef Picker", height: 4, width: 6),
+              Column(
+                children: [
+                  TextCard(cardTitle: 'Match State', height: 2, width: 3),
+                  TextCard(cardTitle: "Match Time", height: 2, width: 3),
+                ],
+              ),
+            ],
+          ),
+          Row(children: [
+            TextCard(cardTitle: "Intake State", height: 2, width: 3,)
+          ],)
+        ],
+      ),
     );
   }
 }
