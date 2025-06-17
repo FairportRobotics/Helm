@@ -18,12 +18,14 @@ class BaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    Size size = MediaQuery.sizeOf(context);
+
     return Card(
       child: Padding(
         padding: EdgeInsets.all(10),
         child: SizedBox(
-          width: 100.0 * width,
-          height: 100.0 * height,
+          width: (size.width / 12) * width ,
+          height: (size.height / 12) * height,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
