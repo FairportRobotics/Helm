@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:helm/ntutils.dart';
 import 'package:helm/widgets/base_card.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import '../widgets/text_card.dart';
@@ -22,7 +23,7 @@ class Dashboard extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text("Helm"),
+        title: Text("Helm - ${NTUtils().connectionStatus()}"),
       ),
       body: ResponsiveGridRow(
         children: [

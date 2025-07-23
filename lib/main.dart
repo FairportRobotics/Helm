@@ -1,12 +1,16 @@
+import 'package:helm/ntutils.dart';
+
 import 'pages/dashboard.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key}){
+    NTUtils().connect("10.5.78.2");
+  }
 
   // This widget is the root of your application.
   @override

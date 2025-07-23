@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import './base_card.dart';
 import 'package:nt4/nt4.dart';
-import '../globals.dart' as glob;
+import 'package:helm/ntutils.dart';
 
 class TextCard extends StatefulWidget {
   const TextCard({
@@ -31,8 +31,10 @@ class _TextCardState extends State<TextCard> {
 
   @override
   Widget build(BuildContext context) {
-    NT4Subscription sub = glob.subscribe(widget.ntTopic!);
-    sub.listen( (data) => setVal(data.toString()) );
+    if(NTUtils().isConnected){
+      NT4Subscription sub = NTUtils().subscribe(widget.ntTopic!);
+      sub.listen( (data) => setVal(data.toString()) );
+    }
 
     return BaseCard(
       cardTitle: widget.cardTitle,
