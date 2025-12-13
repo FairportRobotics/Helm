@@ -24,25 +24,22 @@ class TextCard extends StatefulWidget {
 class _TextCardState extends State<TextCard> {
   String _val = "";
 
-  void setVal( String newVal )
-  {
-    _val = newVal;
+  void setVal(String newVal) {
+    setState(() {
+      _val = newVal;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if(NTUtils().isConnected){
-      NT4Subscription sub = NTUtils().subscribe(widget.ntTopic!);
-      sub.listen( (data) => setVal(data.toString()) );
-    }
+    NT4Subscription sub = NTUtils().subscribe(widget.ntTopic!);
+    sub.listen((data) => setVal(data.toString()));
 
     return BaseCard(
       cardTitle: widget.cardTitle,
       width: widget.width,
       height: widget.height,
-      children: [
-        Text(_val)
-      ],
+      children: [Text(_val)],
     );
   }
 }

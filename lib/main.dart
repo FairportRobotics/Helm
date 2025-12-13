@@ -8,8 +8,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key}){
-    NTUtils().connect("10.5.78.2");
+  MyApp({super.key}) {
+    NTUtils().connect("localhost");
   }
 
   // This widget is the root of your application.
@@ -33,7 +33,10 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.dark,
+        ),
       ),
       home: const Dashboard(),
     );

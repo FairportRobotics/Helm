@@ -1,11 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:helm/ntutils.dart';
 import 'package:helm/widgets/base_card.dart';
+import 'package:helm/widgets/posty_results_card.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import '../widgets/text_card.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  String connectionState = NTUtils().connectionStatus();
+
+  _DashboardState() {
+    NTUtils().addConnectCallback(updateConnectionState);
+    NTUtils().addDisconnectCallback(updateConnectionState);
+  }
+
+  void updateConnectionState() {
+    setState(() {
+      connectionState = NTUtils().connectionStatus();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +42,7 @@ class Dashboard extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text("Helm - ${NTUtils().connectionStatus()}"),
+        title: Text("Helm - $connectionState"),
       ),
       body: ResponsiveGridRow(
         children: [
@@ -41,7 +60,10 @@ class Dashboard extends StatelessWidget {
                     children: [
                       ResponsiveGridCol(
                         md: 6,
-                        child: TextCard(cardTitle: "Match State"),
+                        child: TextCard(
+                          cardTitle: "Match State",
+                          ntTopic: "/FMSInfo/StationNumber",
+                        ),
                       ),
                       ResponsiveGridCol(
                         md: 6,
@@ -49,7 +71,7 @@ class Dashboard extends StatelessWidget {
                       ),
                       ResponsiveGridCol(
                         md: 6,
-                        child: TextCard(cardTitle: "Blah Blah"),
+                        child: TextCard(cardTitle: "Robot State"),
                       ),
                     ],
                   ),
