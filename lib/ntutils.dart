@@ -10,12 +10,9 @@ class NTUtils {
   }
 
   bool isConnected = false;
-  bool _isAttemptingToConnect = false;
   String _serverAddress = "";
 
-  NT4Client? ntClient;
-
-  final Map<String, NT4Subscription> _nt4Subscriptions = {};
+  NT4Client? _ntClient;
 
   final List<VoidCallback> connectCallbacks = [];
   final List<VoidCallback> disconnectCallbacks = [];
@@ -30,12 +27,10 @@ class NTUtils {
 
   void connect(String serverAddress) {
     _serverAddress = serverAddress;
-    _isAttemptingToConnect = true;
-    ntClient = NT4Client(
+    _ntClient = NT4Client(
       serverBaseAddress: serverAddress,
       onConnect: () {
         isConnected = true;
-        _isAttemptingToConnect = false;
 
         for (VoidCallback cb in connectCallbacks) {
           cb();
@@ -52,33 +47,26 @@ class NTUtils {
   }
 
   String connectionStatus() {
-    if (_isAttemptingToConnect) {
-      return "Attempting to connect to $_serverAddress";
-    }
     if (isConnected) {
       return "Connected";
     } else {
-      return "Not Connected";
+      return "Not Connected. Attempting to connect to $_serverAddress";
     }
   }
 
   NT4Subscription subscribe(String topic) {
-    if (!_nt4Subscriptions.containsKey(topic)) {
-      NT4Subscription subscrip = ntClient!.subscribe(
-        topic,
-        NT4SubscriptionOptions(),
-      );
-      _nt4Subscriptions[topic] = subscrip;
-    }
-
-    return _nt4Subscriptions[topic]!;
+    NT4Subscription subscrip = _ntClient!.subscribe(
+      topic,
+      NT4SubscriptionOptions(),
+    );
+    return subscrip;
   }
 
   final Map<String, NT4Topic> _nt4Topics = {};
 
   NT4Topic getPublicTopic(String topic, String type) {
     if (!_nt4Topics.containsKey(topic)) {
-      NT4Topic top = ntClient!.publishNewTopic(topic, type);
+      NT4Topic top = _ntClient!.publishNewTopic(topic, type);
       _nt4Topics[topic] = top;
     }
 

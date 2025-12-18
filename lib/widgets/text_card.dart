@@ -4,16 +4,16 @@ import 'package:nt4/nt4.dart';
 import 'package:helm/ntutils.dart';
 
 class TextCard extends StatefulWidget {
-  const TextCard({
+  TextCard({
     super.key,
     required this.cardTitle,
-    this.ntTopic = '',
+    this.ntTopic = "",
     this.height = 1,
     this.width = 1,
   });
 
   final String cardTitle;
-  final String? ntTopic;
+  String ntTopic = "";
 
   final int width, height;
 
@@ -24,6 +24,8 @@ class TextCard extends StatefulWidget {
 class _TextCardState extends State<TextCard> {
   String _val = "";
 
+  _TextCardState() {}
+
   void setVal(String newVal) {
     setState(() {
       _val = newVal;
@@ -32,9 +34,8 @@ class _TextCardState extends State<TextCard> {
 
   @override
   Widget build(BuildContext context) {
-    NT4Subscription sub = NTUtils().subscribe(widget.ntTopic!);
+    NT4Subscription sub = NTUtils().subscribe(widget.ntTopic);
     sub.listen((data) => setVal(data.toString()));
-
     return BaseCard(
       cardTitle: widget.cardTitle,
       width: widget.width,
