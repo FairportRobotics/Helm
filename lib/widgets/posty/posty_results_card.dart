@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:helm/widgets/posty/models/posty_results_model.dart';
+
 import 'package:flutter/material.dart';
 import 'package:helm/ntutils.dart';
 import 'package:helm/widgets/base_card.dart';
@@ -14,15 +16,31 @@ class PostyResultsCard extends StatefulWidget {
 
 class _PostyResultsCardState extends State<PostyResultsCard> {
   final String _ntTopic = "/Posty/results/post/resultsJson";
-
+  NT4Subscription? sub;
   List<PostyResultModel> resultsData = [];
 
-  _PostyResultsCardState() {
-    NT4Subscription sub = NTUtils().subscribe(_ntTopic);
-    sub.listen((data) {
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    print("Dispose");
+    NTUtils().unsubscribe(sub!);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("It's been made");
+    sub = NTUtils().subscribe(
+      _ntTopic,
+      opts: NT4SubscriptionOptions(all: true),
+    );
+    sub!.listen((data) {
+      print("nt Update");
       setState(() {
         List<dynamic> tmp = jsonDecode(data.toString());
 
+        resultsData.clear();
         for (dynamic json in tmp) {
           resultsData.add(PostyResultModel.fromJson(json));
         }
@@ -32,6 +50,7 @@ class _PostyResultsCardState extends State<PostyResultsCard> {
 
   @override
   Widget build(BuildContext context) {
+    print("Build");
     List<Widget> children = [];
 
     resultsData.sort((a, b) => a.subsystemName.compareTo(b.subsystemName));
@@ -58,24 +77,4 @@ class _PostyResultsCardState extends State<PostyResultsCard> {
       children: children,
     );
   }
-}
-
-class PostyResultModel {
-  String testName = "";
-  String subsystemName = "";
-  String result = "";
-  String failReason = "";
-
-  PostyResultModel(
-    this.testName,
-    this.subsystemName,
-    this.result,
-    this.failReason,
-  );
-
-  PostyResultModel.fromJson(Map<String, dynamic> json)
-    : testName = json['testName'] as String,
-      subsystemName = json['subsystemName'] as String,
-      result = json['result'] as String,
-      failReason = json['failReason'] as String;
 }

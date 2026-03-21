@@ -1,12 +1,16 @@
 import 'dart:convert';
 
+import 'package:helm/widgets/posty/models/posty_results_model.dart';
+
 import 'package:flutter/material.dart';
 import 'package:helm/ntutils.dart';
 import 'package:helm/widgets/base_card.dart';
 import 'package:nt4/nt4.dart';
 
 class PostySummaryCard extends StatefulWidget {
-  const PostySummaryCard({super.key});
+  const PostySummaryCard({super.key, this.showAlertDialog = false});
+
+  final bool showAlertDialog;
 
   @override
   State<StatefulWidget> createState() => _PostySummaryCardState();
@@ -14,30 +18,37 @@ class PostySummaryCard extends StatefulWidget {
 
 class _PostySummaryCardState extends State<PostySummaryCard> {
   final String _ntTopic = "/Posty/results/post/resultsJson";
-
+  NT4Subscription? sub;
   List<PostyResultModel> resultsData = [];
 
-  _PostySummaryCardState() {}
-
   @override
-  Widget build(BuildContext context) {
-    NT4Subscription sub = NTUtils().subscribe(_ntTopic);
-    sub.listen((data) {
+  void initState() {
+    super.initState();
+    sub = NTUtils().subscribe(_ntTopic);
+    sub!.listen((data) {
       setState(() {
         List<dynamic> tmp = jsonDecode(data.toString());
 
+        resultsData.clear();
         for (dynamic json in tmp) {
           resultsData.add(PostyResultModel.fromJson(json));
         }
       });
     });
+  }
 
+  bool isFailedResult() {
     bool systemNotReady = false;
 
     for (PostyResultModel result in resultsData) {
       systemNotReady |= result.result == "FAILED";
     }
 
+    return systemNotReady;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     List<Widget> children = [
       Center(
         child: Container(
@@ -49,13 +60,39 @@ class _PostySummaryCardState extends State<PostySummaryCard> {
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: !systemNotReady ? Colors.green : Colors.red,
+                color: !isFailedResult() ? Colors.green : Colors.red,
               ),
             ),
           ),
         ),
       ),
     ];
+
+    if (isFailedResult()) {
+      if (widget.showAlertDialog) {
+        WidgetsBinding.instance.addPostFrameCallback((dur) {
+          showDialog<String>(
+            context: context,
+            builder:
+                (BuildContext context) => AlertDialog(
+                  title: const Text("POST Test failed"),
+                  content: Text("Hello World"),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => {Navigator.pop(context, 'Ignore')},
+                      child: const Text("Ignore"),
+                    ),
+                    TextButton(
+                      onPressed: () => {Navigator.pop(context, 'Re-run test')},
+                      child: const Text("Re-run test"),
+                    ),
+                  ],
+                ),
+          );
+        });
+      }
+    }
+
     return BaseCard(
       width: 1,
       height: 1,
@@ -63,24 +100,4 @@ class _PostySummaryCardState extends State<PostySummaryCard> {
       children: children,
     );
   }
-}
-
-class PostyResultModel {
-  String testName = "";
-  String subsystemName = "";
-  String result = "";
-  String failReason = "";
-
-  PostyResultModel(
-    this.testName,
-    this.subsystemName,
-    this.result,
-    this.failReason,
-  );
-
-  PostyResultModel.fromJson(Map<String, dynamic> json)
-    : testName = json['testName'] as String,
-      subsystemName = json['subsystemName'] as String,
-      result = json['result'] as String,
-      failReason = json['failReason'] as String;
 }

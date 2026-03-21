@@ -3,6 +3,7 @@ import 'package:helm/ntutils.dart';
 import 'package:helm/widgets/base_card.dart';
 import 'package:helm/widgets/posty/posty_results_card.dart';
 import 'package:helm/widgets/posty/posty_summary_card.dart';
+import 'package:helm/widgets/smart_dashboard/sendable_chooser_card.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import '../widgets/text_card.dart';
 
@@ -36,7 +37,7 @@ class _DashboardState extends State<Dashboard> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return DefaultTabController(
-      length: 1,
+      length: 2,
       initialIndex: 0,
       child: Scaffold(
         appBar: AppBar(
@@ -47,7 +48,12 @@ class _DashboardState extends State<Dashboard> {
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
           title: Text("Helm - $connectionState"),
-          bottom: TabBar(tabs: <Widget>[Tab(icon: Icon(Icons.home))]),
+          bottom: TabBar(
+            tabs: <Widget>[
+              Tab(icon: Icon(Icons.home)),
+              Tab(icon: Icon(Icons.checklist)),
+            ],
+          ),
         ),
         body: TabBarView(
           children: <Widget>[
@@ -88,6 +94,11 @@ class _DashboardState extends State<Dashboard> {
                               child: TextCard(cardTitle: "Blah"),
                             ),
                             ResponsiveGridCol(child: PostySummaryCard()),
+                            ResponsiveGridCol(
+                              child: SendableChooserCard(
+                                chooserName: "SendableChooser[0]",
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -96,6 +107,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ],
             ),
+            Text("CheckList"),
           ],
         ),
       ),
