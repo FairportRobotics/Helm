@@ -1,4 +1,6 @@
 import 'package:helm/ntutils.dart';
+import 'dbconstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'pages/dashboard.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,18 @@ void main() {
 
 class MyApp extends StatelessWidget {
   MyApp({super.key}) {
-    NTUtils().connect("localhost");
+    _connectNT();
+  }
+
+  void _connectNT() {
+    SharedPreferences.getInstance().then((value) async {
+      String addr = value.getString(DBConstants.ntServerAddrKey) ?? "";
+      if (addr.isEmpty) {
+        addr = "localhost"; // Default to localhost and save
+        await value.setString(DBConstants.ntServerAddrKey, addr);
+      }
+      NTUtils().connect(addr);
+    });
   }
 
   // This widget is the root of your application.

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:helm/ntutils.dart';
+import 'package:helm/pages/settings.dart';
 import 'package:helm/widgets/base_card.dart';
 import 'package:helm/widgets/posty/posty_results_card.dart';
 import 'package:helm/widgets/posty/posty_summary_card.dart';
@@ -52,6 +53,23 @@ class _DashboardState extends State<Dashboard> {
             tabs: <Widget>[
               Tab(icon: Icon(Icons.home)),
               Tab(icon: Icon(Icons.checklist)),
+            ],
+          ),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(child: Text("Helm")),
+              ListTile(
+                title: const Text("Settings"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Settings()),
+                  );
+                },
+              ),
             ],
           ),
         ),
